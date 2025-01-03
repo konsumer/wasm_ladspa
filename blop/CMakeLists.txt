@@ -1,24 +1,37 @@
 include_directories("${CMAKE_CURRENT_LIST_DIR}/src/include")
+include_directories("${CMAKE_CURRENT_LIST_DIR}/../include")
 
-add_library(adsr_1653 SHARED src/adsr_1653.so.c)
-add_library(adsr_1680 SHARED src/adsr_1680.so.c)
-add_library(amp_1654 SHARED src/amp_1654.so.c)
-add_library(branch_1673 SHARED src/branch_1673.so.c)
-add_library(dahdsr_2021 SHARED src/dahdsr_2021.so.c)
-add_library(difference_2030 SHARED src/difference_2030.so.c)
-add_library(fmod_1656 SHARED src/fmod_1656.so.c)
-add_library(interpolator_1660 SHARED src/interpolator_1660.so.c)
-add_library(lp4pole_1671 SHARED src/lp4pole_1671.so.c  src/lp4pole_filter.c)
-add_library(product_1668 SHARED src/product_1668.so.c)
-add_library(pulse_1645 SHARED src/pulse_1645.so.c src/wavedata.c)
-add_library(quantiser SHARED src/quantiser.so.c)
-add_library(random_1661 SHARED src/random_1661.so.c)
-add_library(ratio_2034 SHARED src/ratio_2034.so.c)
-add_library(sawtooth_1641 SHARED src/sawtooth_1641.so.c  src/wavedata.c)
-add_library(sequencer SHARED src/sequencer.so.c)
-add_library(square_1643 SHARED src/square_1643.so.c  src/wavedata.c)
-add_library(sum_1665 SHARED src/sum_1665.so.c)
-add_library(sync_pulse_2023 SHARED src/sync_pulse_2023.so.c)
-add_library(sync_square_1678 SHARED src/sync_square_1678.so.c  src/wavedata.c)
-add_library(tracker_2025 SHARED src/tracker_2025.so.c)
-add_library(triangle_1649 SHARED src/triangle_1649.so.c  src/wavedata.c)
+set(BLOP_PLUGINS
+  adsr_1653
+  adsr_1680
+  amp_1654
+  branch_1673
+  dahdsr_2021
+  difference_2030
+  fmod_1656
+  interpolator_1660
+  lp4pole_1671
+  product_1668
+  pulse_1645
+  quantiser
+  random_1661
+  ratio_2034
+  sawtooth_1641
+  sequencer
+  square_1643
+  sum_1665
+  sync_pulse_2023
+  sync_square_1678
+  tracker_2025
+  triangle_1649
+)
+
+foreach(PLUGIN IN LISTS BLOP_PLUGINS)
+  if (EMSCRIPTEN)
+    add_executable(${PLUGIN} "${CMAKE_CURRENT_LIST_DIR}/src/${PLUGIN}.so.c"  "${CMAKE_CURRENT_LIST_DIR}/../include/ladspa_main.c" "${CMAKE_CURRENT_LIST_DIR}/src/lp4pole_filter.c" "${CMAKE_CURRENT_LIST_DIR}/src/wavedata.c")
+    target_link_options(${PLUGIN} PUBLIC -Oz)
+    set_target_properties(${PLUGIN} PROPERTIES SUFFIX ".wasm")
+  else()
+    add_library("${PLUGIN}" SHARED "src/${PLUGIN}.c")
+  endif()
+endforeach()

@@ -22,5 +22,5 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include_directories("${CMAKE_CURRENT_LIST_DIR}/include")
 
 add_subdirectory(blop)
-add_subdirectory(swh)
 add_subdirectory(cmt)
+add_subdirectory(swh)

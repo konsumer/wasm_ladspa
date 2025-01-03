@@ -1,7 +1,6 @@
 include_directories("${CMAKE_CURRENT_LIST_DIR}/src")
 
-add_library(cmt SHARED
-  src/am.cpp
+set(CMT_SOURCES src/am.cpp
   src/ambisonic.cpp
   src/amp.cpp
   src/analogue.cpp
@@ -36,3 +35,12 @@ add_library(cmt SHARED
   src/sledgehammer.cpp
   src/logistic.cpp
 )
+
+
+if (EMSCRIPTEN)
+  add_executable(cmt ${CMT_SOURCES} ../include/ladspa_main.c)
+  target_link_options(cmt PUBLIC -Oz -sSTANDALONE_WASM)
+  set_target_properties(cmt PROPERTIES SUFFIX ".wasm")
+else()
+  add_library(cmt SHARED ${CMT_SOURCES})
+endif()

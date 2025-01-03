@@ -8,4 +8,8 @@ Initially, I just want to get it all building native LADSPA plugins with cmake, 
 # build for native
 cmake -B build -G Ninja
 cmake --build build
+
+# web build
+emcmake cmake -B wbuild -G Ninja
+cmake --build wbuild
 ```
