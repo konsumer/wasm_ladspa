@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(wasm_ladspa VERSION 0.2.8 LANGUAGES C)
+project(wasm_ladspa VERSION 0.2.8 LANGUAGES C CXX)
 
 include(FetchContent)
 # set(FETCHCONTENT_QUIET OFF)
@@ -23,3 +23,4 @@ include_directories("${CMAKE_CURRENT_LIST_DIR}/include")
 
 add_subdirectory(blop)
 add_subdirectory(swh)
+add_subdirectory(cmt)
