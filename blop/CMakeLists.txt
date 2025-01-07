@@ -26,12 +26,14 @@ set(BLOP_PLUGINS
   triangle_1649
 )
 
+set(BLOP_UTILS "${CMAKE_CURRENT_LIST_DIR}/../include/ladspa_main.c" "${CMAKE_CURRENT_LIST_DIR}/src/lp4pole_filter.c" "${CMAKE_CURRENT_LIST_DIR}/src/wavedata.c")
+
 foreach(PLUGIN IN LISTS BLOP_PLUGINS)
     if (EMSCRIPTEN)
-        add_executable(${PLUGIN} "${CMAKE_CURRENT_LIST_DIR}/src/${PLUGIN}.so.c"  "${CMAKE_CURRENT_LIST_DIR}/../include/ladspa_main.c" "${CMAKE_CURRENT_LIST_DIR}/src/lp4pole_filter.c" "${CMAKE_CURRENT_LIST_DIR}/src/wavedata.c")
+        add_executable(${PLUGIN} "${CMAKE_CURRENT_LIST_DIR}/src/${PLUGIN}.so.c" ${BLOP_UTILS})
         target_link_options(${PLUGIN} PUBLIC -Oz)
         set_target_properties(${PLUGIN} PROPERTIES SUFFIX ".wasm")
     else()
-        add_library("${PLUGIN}" SHARED "src/${PLUGIN}.so.c")
+        add_library("${PLUGIN}" SHARED "src/${PLUGIN}.so.c" ${BLOP_UTILS})
     endif()
 endforeach()

@@ -1,6 +1,8 @@
-find_package(fftw3 REQUIRED)
+set(FFTW_USE_STATIC_LIBS ON)
+find_package(FFTW REQUIRED)
 
 include_directories("${CMAKE_CURRENT_LIST_DIR}/src")
+include_directories("${FFTW_INCLUDES}")
 
 set(SWH_PLUGINS
   imp_1199
@@ -101,13 +103,37 @@ set(SWH_PLUGINS
   zm1_1428
 )
 
+set(SWH_UTILS
+  src/util/db.c
+  src/util/rms.c
+  src/util/blo.c
+  src/util/iir.c
+  src/util/pitchscale.c
+  src/gverb/gverb.c
+  src/gverb/gverbdsp.c
+  src/gsm/add.c
+  src/gsm/code.c
+  src/gsm/decode.c
+  src/gsm/gsm_create.c
+  src/gsm/gsm_decode.c
+  src/gsm/gsm_destroy.c
+  src/gsm/gsm_encode.c
+  src/gsm/gsm_option.c
+  src/gsm/long_term.c
+  src/gsm/lpc.c
+  src/gsm/preprocess.c
+  src/gsm/rpe.c
+  src/gsm/short_term.c
+  src/gsm/table.c
+)
+
 foreach(PLUGIN IN LISTS SWH_PLUGINS)
   if (EMSCRIPTEN)
-    add_executable(${PLUGIN} src/${PLUGIN}.c  ../include/ladspa_main.c)
-    target_link_options(${PLUGIN} PUBLIC -Oz)
+    add_executable(${PLUGIN} src/${PLUGIN}.c  ../include/ladspa_main.c ${SWH_UTILS})
     set_target_properties(${PLUGIN} PROPERTIES SUFFIX ".wasm")
   else()
-    add_library(${PLUGIN} SHARED src/${PLUGIN}.c)
+    add_library(${PLUGIN} SHARED src/${PLUGIN}.c ${SWH_UTILS})
   endif()
-  target_link_libraries(${PLUGIN} fftw3f)
+  target_link_options(${PLUGIN} PUBLIC -Oz)
+  target_link_libraries(${PLUGIN} ${FFTW_LIBRARIES})
 endforeach()
